@@ -7,9 +7,10 @@ import { addItem } from './CartSlice';
 function ProductList() {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-    const [addedToCart, setAddedToCart] = useState({});
     const dispatch = useDispatch();
     const cartCount = useSelector(state => state.cart.itemCount);
+    const cart = useSelector(state => state.cart.items);
+
 
     const plantsArray = [
         {
@@ -255,10 +256,6 @@ function ProductList() {
 
     const handleAddToCart = (plant) => {
         dispatch(addItem(plant));
-        setAddedToCart((prevState) => ({
-            ...prevState,
-            [plant.name]: true, // Set the product name as key and value as true to indicate it's added to cart
-        }));
     }
 
     return (
@@ -287,15 +284,16 @@ function ProductList() {
                         plantsArray.map((category, index) => {
                             return (
                                 <div key={index}>
-                                    <h1>{category.category}</h1>
+                                    <h1 className='product-category'><div>{category.category}</div></h1>
                                     <div className='product-list'>{
                                         category.plants.map((plant, plantIndex) => {
                                             return (
                                                 <div className="product-card" key={plantIndex}>
                                                     <img className="product-image" src={plant.image} alt={plant.name} />
                                                     <div className="product-title">{plant.name}</div>
-                                                    {/*Similarly like the above plant.name show other details like description and cost*/}
-                                                    <button className="product-button" onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                                                    <div className="product-price">{plant.cost}</div>
+                                                    <div className="">{plant.description}</div>
+                                                    <button className={cart.some(item => item.name === plant.name) ? "product-button btn-disabled" : "product-button"} disabled={cart.some(item => item.name === plant.name)} onClick={() => handleAddToCart(plant)} >Add to Cart</button>
                                                 </div>
                                             )
                                         })
